@@ -61,8 +61,6 @@ This bot connects to CoinVera’s WebSocket API to subscribe to trades of a spec
 git clone https://github.com/ahk780/solana-copy-trading-bot.git
 cd solana-copy-trading-bot
 npm install
-mkdir data
-echo '{ "positions": [] }' > data/positions.json
 mv .env.example .env
 npm start
 ```
