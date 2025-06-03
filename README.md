@@ -147,7 +147,7 @@ Refer to the `.env.example` for details and examples.
 
 - **SolanaPortal Docs:** https://docs.solanaportal.io  
 - **CoinVera:** https://www.coinvera.io  
-- **Telegram Community:** https://telegram.com/ahk780  
+- **Telegram Community:** https://t.me/ahk782  
 
 ---
 
@@ -155,7 +155,7 @@ Refer to the `.env.example` for details and examples.
 
 - ⭐ Star the repo: https://github.com/ahk780/solana-copy-trading-bot  
 - 💬 Join our Telegram to request features or get help:  
-  https://telegram.com/ahk780  
+  https://t.me/ahk782  
 
 ---
 
