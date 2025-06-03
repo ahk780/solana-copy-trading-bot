@@ -1,4 +1,13 @@
 {
+  "name": "solana-copy-trading-bot",
+  "version": "3.0.0",
+  "description": "A Solana copy trading bot that mirrors buys and sells from a specified wallet",
+  "author": "AHK780",
+  "license": "MIT",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "dependencies": {
     "@solana/web3.js": "^1.98.2",
     "bs58": "^6.0.0",
