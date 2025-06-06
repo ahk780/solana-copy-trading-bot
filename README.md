@@ -151,7 +151,7 @@ Refer to the `.env.example` for details and examples.
 ## Links & Resources
 
 - **SolanaPortal Docs:** https://docs.solanaportal.io  
-- **CoinVera:** https://www.coinvera.io  
+- **CoinVera:** [https://www.coinvera.io](https://www.coinvera.io/auth/signup?ref=680482c95d22a2a1ece8d092)  
 - **Telegram Community:** https://t.me/ahk782  
 
 ---
