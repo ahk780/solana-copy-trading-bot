@@ -7,6 +7,7 @@ A fast Solana copy-trading bot leveraging Jito to mirror any transaction from a 
 
 ## Video Guide
 - **Watch this video to see the bot in action**
+
 [<img src="https://i.ibb.co/1GpdMzDy/Solana-Copy-Trading-Bot.jpg" width="50%">](https://www.youtube.com/watch?v=Gbw7UfrGSLU "Solana Copy Trading Bot")
 
 ---
