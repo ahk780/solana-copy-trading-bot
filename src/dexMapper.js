@@ -1,12 +1,19 @@
 // src/dexMapper.js
+const config = require('./config');
 
 /**
  * Given an array like ['Pump.fun', 'Pump.fun Amm'], choose the correct SolanaPortal string.
- * Returns one of: 'pumpfun', 'jupiter', 'meteora', 'raydium', or a sanitized fallback.
+ * Returns one of: 'pumpfun', 'jupiter', 'meteora', 'raydium', 'auto', or a sanitized fallback.
+ * Respects the user's PREFERRED_DEX setting if specified.
  */
 function mapDex(dexsArray) {
   if (!Array.isArray(dexsArray) || dexsArray.length === 0) {
     return null;
+  }
+
+  // If user has specified a preferred DEX, use it
+  if (config.PREFERRED_DEX !== 'none') {
+    return config.PREFERRED_DEX;
   }
 
   const lowered = dexsArray.map(d => d.toLowerCase());

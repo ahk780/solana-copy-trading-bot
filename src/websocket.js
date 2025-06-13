@@ -16,14 +16,14 @@ class CopyEmitter extends EventEmitter {
     this.ws = new WebSocket(WS_URL);
 
     this.ws.on('open', () => {
-      info('[WebSocket] Connection opened. Subscribing to trades for COPY_WALLET...');
+      info(`[WebSocket] Connection opened. Subscribing to trades for ${config.COPY_WALLET}...`);
       const payload = {
         apiKey: config.COINVERA_API,
         method: 'subscribeTrade',
         tokens: [config.COPY_WALLET]
       };
       this.ws.send(JSON.stringify(payload));
-      info('[WebSocket] Subscribe request sent:', JSON.stringify(payload));
+      info('[WebSocket] Subscribe request sent');
 
       // Keep‐alive PING every 10 seconds
       this.pingInterval = setInterval(() => {
@@ -37,8 +37,10 @@ class CopyEmitter extends EventEmitter {
       try {
         const msg = JSON.parse(data.toString());
 
-        // DEBUG: log every incoming message
-        console.log('[WebSocket] Received raw message:', JSON.stringify(msg));
+        // Only log subscription success
+        if (msg.type === 'subscribeTrade' && msg.status === 'success') {
+          info('[WebSocket] Successfully subscribed to WebSocket');
+        }
 
         // Only emit if signer matches COPY_WALLET
         if (msg.signer && msg.signer === config.COPY_WALLET) {

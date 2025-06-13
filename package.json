@@ -1,6 +1,6 @@
 {
   "name": "solana-copy-trading-bot",
-  "version": "3.5.0",
+  "version": "3.5.5",
   "description": "A Solana copy trading bot that mirrors buys and sells from a specified wallet",
   "author": "AHK780",
   "license": "MIT",

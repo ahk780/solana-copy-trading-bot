@@ -31,7 +31,7 @@ A fast Solana copy-trading bot leveraging Jito to mirror any transaction from a 
 
 ## Overview
 
-This bot connects to CoinVera’s WebSocket API to subscribe to trades of a specified wallet. It mirrors each buy/sell by submitting transactions via Jito. It tracks open positions in a local JSON database and can operate in either “COPY” or “SELLING” mode.
+This bot connects to CoinVera's WebSocket API to subscribe to trades of a specified wallet. It mirrors each buy/sell by submitting transactions via Jito. It tracks open positions in a local JSON database and can operate in either "COPY" or "SELLING" mode.
 
 ---
 
@@ -145,6 +145,7 @@ Refer to the `.env.example` for details and examples.
 | `JITO_ENGINE`       | Jito RPC endpoint (e.g. `https://tokyo.mainnet.block-engine.jito.wtf/api/v1/transactions`) |
 | `COINVERA_API`      | CoinVera HTTP API key (for price lookups & WS)                                                 |
 | `PRICE_CHECK_DELAY` | Polling interval in ms for open-position price checks                                          |
+| `PREFERRED_DEX`     | Preferred DEX for trading. Options: "none" (system decides) or specific DEX: "auto", "pumpfun", "meteora", "raydium", "moonshot", "jupiter" |
 
 ---
 

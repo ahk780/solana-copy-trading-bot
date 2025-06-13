@@ -63,6 +63,7 @@ async function signAndSendViaJito(base64Txn) {
  */
 async function getPortalTxn(params) {
   const url = 'https://api.solanaportal.io/api/trading';
+  //const url = 'http://localhost:3002/api/trading';
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

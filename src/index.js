@@ -34,7 +34,7 @@ function rawToDecimalString(rawBigInt, decimals) {
     // In-memory set: IDs of positions currently being sold (to prevent duplicates)
     const inSellingSet = new Set();
 
-    // Load any existing “active” positions from storage
+    // Load any existing "active" positions from storage
     for (const pos of storage.getActivePositions()) {
       activeMap.set(pos.id, { ...pos });
     }
@@ -155,7 +155,7 @@ function rawToDecimalString(rawBigInt, decimals) {
     // === BOT_MODE = COPY ===
     info('[Main] BOT_MODE=COPY → starting normal copy flow.');
 
-    // --- 1) Price‐polling loop for TP/SL on SAFE positions ---
+    // --- 1) Price-polling loop for TP/SL on SAFE positions ---
     async function pricePollingLoop() {
       for (const pos of Array.from(activeMap.values())) {
         const {
@@ -231,7 +231,7 @@ function rawToDecimalString(rawBigInt, decimals) {
                 `Current $${currentPriceUsd.toFixed(9)}, Δ ${changePct.toFixed(2)}%.`
             );
           }
-          // EXACT mode does not auto‐close here
+          // EXACT mode does not auto-close here
         } catch (err) {
           error('[Main] Error in pricePollingLoop for', id, err.message);
         }
@@ -321,7 +321,7 @@ function rawToDecimalString(rawBigInt, decimals) {
           const priceData = await getPriceOnChain(mint);
           const entryPriceUsd = priceData ? parseFloat(priceData.priceInUsd) : 0;
 
-          // 3) Now that we have real data, create a fully “active” position
+          // 3) Now that we have real data, create a fully "active" position
           const newPos = storage.addPosition({
             mint,
             buy_amount: buyAmountSol,
@@ -373,7 +373,7 @@ function rawToDecimalString(rawBigInt, decimals) {
       }
     });
 
-    info('[Main] Bot is now listening to COPY_WALLET trades...');
+    info(`[Main] Bot is now listening to ${config.COPY_WALLET} trades...`);
   } catch (err) {
     error('[Main] Fatal error:', err.message);
     process.exit(1);

@@ -26,6 +26,7 @@ const config = {
   JITO_ENGINE:        requiredEnv('JITO_ENGINE'),
   COINVERA_API:       requiredEnv('COINVERA_API'),
   PRICE_CHECK_DELAY:  parseInt(requiredEnv('PRICE_CHECK_DELAY'), 10), // ms
+  PREFERRED_DEX:      (process.env.PREFERRED_DEX || 'none').toLowerCase(), // "none" (system decides) or specific DEX: "auto", "pumpfun", "meteora", "raydium", "moonshot", "jupiter"
 
   // New: allow or prevent multiple buys for same mint
   ENABLE_MULTI_BUY:   (process.env.ENABLE_MULTI_BUY === 'true'),
@@ -33,12 +34,18 @@ const config = {
 
 const validBotModes   = ['COPY', 'SELLING'];
 const validTradeTypes = ['EXACT', 'SAFE'];
+const validDexOptions = ['none', 'auto', 'pumpfun', 'meteora', 'raydium', 'moonshot', 'jupiter'];
+
 if (!validBotModes.includes(config.BOT_MODE)) {
   console.error(`[config] ERROR: BOT_MODE must be one of: ${validBotModes.join(', ')}`);
   exit(1);
 }
 if (!validTradeTypes.includes(config.TRADE_TYPE)) {
   console.error(`[config] ERROR: TRADE_TYPE must be one of: ${validTradeTypes.join(', ')}`);
+  exit(1);
+}
+if (!validDexOptions.includes(config.PREFERRED_DEX)) {
+  console.error(`[config] ERROR: PREFERRED_DEX must be one of: ${validDexOptions.join(', ')}`);
   exit(1);
 }
 
