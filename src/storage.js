@@ -75,7 +75,14 @@ function addPosition(positionData) {
     parent_signature: positionData.parent_signature || null,
     stop_loss_pct: positionData.stop_loss_pct || null,
     take_profit_pct: positionData.take_profit_pct || null,
-    dex: positionData.dex                            // store the DEX string
+    dex: positionData.dex,                           // store the DEX string
+    
+    // Trailing Stop Loss fields
+    highest_price: positionData.entry_price,         // track highest price reached
+    trailing_stop_price: null,                       // current trailing stop loss price
+    trailing_stop_activated: false,                  // whether trailing stop is active
+    trailing_stop_distance: positionData.trailing_stop_distance || null,
+    trailing_stop_activation: positionData.trailing_stop_activation || null
   };
 
   data.positions.push(newPosition);

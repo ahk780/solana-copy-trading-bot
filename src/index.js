@@ -166,7 +166,11 @@ function rawToDecimalString(rawBigInt, decimals) {
           entry_price,
           stop_loss_pct,
           take_profit_pct,
-          dex
+          highest_price,
+          trailing_stop_price,
+          trailing_stop_activated,
+          trailing_stop_distance,
+          trailing_stop_activation
         } = pos;
 
         // Skip if not "active" or already in the middle of selling
@@ -189,6 +193,69 @@ function rawToDecimalString(rawBigInt, decimals) {
 
           if (trade_mode === 'SAFE') {
             const changePct = ((currentPriceUsd - entryPriceNum) / entryPriceNum) * 100.0;
+            
+            // === TRAILING STOP LOSS LOGIC ===
+            if (config.ENABLE_TRAILING_STOP && trailing_stop_distance && trailing_stop_activation !== null) {
+              let newHighestPrice = highest_price;
+              let newTrailingStopPrice = trailing_stop_price;
+              let newTrailingStopActivated = trailing_stop_activated;
+              let trailingStopTriggered = false;
+              
+              // Update highest price if current price is higher
+              if (currentPriceUsd > highest_price) {
+                newHighestPrice = currentPriceUsd;
+                pos.highest_price = newHighestPrice;
+                
+                // Check if trailing stop should be activated
+                if (!trailing_stop_activated && changePct >= trailing_stop_activation) {
+                  newTrailingStopActivated = true;
+                  pos.trailing_stop_activated = newTrailingStopActivated;
+                  info(`[Main][TSL] Trailing stop activated for position ${id} at ${changePct.toFixed(2)}% profit`);
+                }
+                
+                // Update trailing stop price if activated
+                if (newTrailingStopActivated) {
+                  newTrailingStopPrice = newHighestPrice * (1 - trailing_stop_distance / 100);
+                  pos.trailing_stop_price = newTrailingStopPrice;
+                  info(`[Main][TSL] Trailing stop updated for position ${id}: stop at $${newTrailingStopPrice.toFixed(9)}`);
+                }
+              }
+              
+              // Check if trailing stop loss should trigger
+              if (newTrailingStopActivated && newTrailingStopPrice && currentPriceUsd <= newTrailingStopPrice) {
+                trailingStopTriggered = true;
+              }
+              
+              // Update storage with new trailing stop data
+              storage.updatePosition(id, {
+                highest_price: newHighestPrice,
+                trailing_stop_price: newTrailingStopPrice,
+                trailing_stop_activated: newTrailingStopActivated
+              });
+              
+              // Execute trailing stop loss if triggered
+              if (trailingStopTriggered) {
+                const profitFromEntry = ((currentPriceUsd - entryPriceNum) / entryPriceNum) * 100.0;
+                const dropFromPeak = ((newHighestPrice - currentPriceUsd) / newHighestPrice) * 100.0;
+                
+                info(
+                  `[Main][TSL] Trailing stop triggered for position ${id} (${mint}). ` +
+                  `Peak: $${newHighestPrice.toFixed(9)}, Current: $${currentPriceUsd.toFixed(9)}, ` +
+                  `Drop: -${dropFromPeak.toFixed(2)}%, Total profit: +${profitFromEntry.toFixed(2)}%`
+                );
+                
+                inSellingSet.add(id);
+                storage.updatePosition(id, { status: 'closed' });
+                activeMap.delete(id);
+
+                const sold = await safeSell(pos);
+                if (sold) {
+                  info(`[Main][TSL] Position ${id} closed via trailing stop at $${currentPriceUsd.toFixed(9)}.`);
+                }
+                inSellingSet.delete(id);
+                continue;
+              }
+            }
 
             // TAKE_PROFIT
             if (changePct >= take_profit_pct) {
@@ -226,10 +293,15 @@ function rawToDecimalString(rawBigInt, decimals) {
             }
 
             // Still open
-            info(
-              `[Main] Position ${id} (${mint}) still open. Entry $${entryPriceNum.toFixed(9)}, ` +
-                `Current $${currentPriceUsd.toFixed(9)}, Δ ${changePct.toFixed(2)}%.`
-            );
+            let logMessage = `[Main] Position ${id} (${mint}) still open. Entry $${entryPriceNum.toFixed(9)}, ` +
+              `Current $${currentPriceUsd.toFixed(9)}, Δ ${changePct.toFixed(2)}%`;
+            
+            // Add trailing stop loss info if enabled
+            if (config.ENABLE_TRAILING_STOP && trailing_stop_distance && pos.trailing_stop_activated) {
+              logMessage += `, Peak $${pos.highest_price.toFixed(9)}, TSL $${pos.trailing_stop_price.toFixed(9)}`;
+            }
+            
+            info(logMessage + '.');
           }
           // EXACT mode does not auto-close here
         } catch (err) {
@@ -333,7 +405,10 @@ function rawToDecimalString(rawBigInt, decimals) {
             parent_signature: signature,
             stop_loss_pct: config.TRADE_TYPE === 'SAFE' ? config.STOP_LOSS : null,
             take_profit_pct: config.TRADE_TYPE === 'SAFE' ? config.TAKE_PROFIT : null,
-            dex
+            dex,
+            // Trailing Stop Loss parameters
+            trailing_stop_distance: config.ENABLE_TRAILING_STOP ? config.TRAILING_STOP_DISTANCE : null,
+            trailing_stop_activation: config.ENABLE_TRAILING_STOP ? config.TRAILING_STOP_ACTIVATION : null
           });
 
           activeMap.set(newPos.id, { ...newPos });

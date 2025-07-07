@@ -30,6 +30,11 @@ const config = {
 
   // New: allow or prevent multiple buys for same mint
   ENABLE_MULTI_BUY:   (process.env.ENABLE_MULTI_BUY === 'true'),
+  
+  // Trailing Stop Loss Configuration
+  ENABLE_TRAILING_STOP: (process.env.ENABLE_TRAILING_STOP === 'true'),
+  TRAILING_STOP_DISTANCE: parseFloat(process.env.TRAILING_STOP_DISTANCE || '0'), // percent distance from peak
+  TRAILING_STOP_ACTIVATION: parseFloat(process.env.TRAILING_STOP_ACTIVATION || '0'), // minimum profit % before trailing starts
 };
 
 const validBotModes   = ['COPY', 'SELLING'];
